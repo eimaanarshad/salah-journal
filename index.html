@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Salah Journal</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#e9f0ee;--card:#f7faf9;--ink:#17363a;--mute:#5d7a7c;--line:#cfdcda;--accent:#1f6f6b;--gold:#b98d2e;--goldsoft:#f1e4bf;--on:#fff;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1b1f;--card:#14272c;--ink:#e6efed;--mute:#8fb0b0;--line:#25403f;--accent:#5fb7ae;--gold:#e0b850;--goldsoft:#3a3220;--on:#0d1b1f}}
+:root[data-theme="dark"]{--bg:#0d1b1f;--card:#14272c;--ink:#e6efed;--mute:#8fb0b0;--line:#25403f;--accent:#5fb7ae;--gold:#e0b850;--goldsoft:#3a3220;--on:#0d1b1f}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100%}
+.wrap{max-width:520px;margin:0 auto;padding:20px 16px 48px}
+.ar{font-family:"Amiri","Traditional Arabic",Georgia,serif}
+header{text-align:center;padding:8px 0 14px}
+.bis{font-size:30px;color:var(--gold);line-height:1.6}
+.date{display:flex;align-items:center;justify-content:center;gap:14px}
+.date h1{font:400 22px/1.2 "Amiri",Georgia,serif;margin:0;min-width:210px}
+.date button{background:none;border:1px solid var(--line);color:var(--ink);width:36px;height:36px;border-radius:50%;font-size:18px;cursor:pointer}
+.date button:disabled{opacity:.3;cursor:default}
+.sub{color:var(--mute);font-size:14px;margin-top:2px}
+.quote{background:var(--card);border-radius:18px;padding:22px 22px 18px;margin:8px 0 14px;text-align:center}
+.quote p{font:italic 400 21px/1.5 "Amiri",Georgia,serif;margin:0 0 8px}
+.quote small{color:var(--mute);font-size:13px}
+.next{background:var(--accent);color:var(--on);border-radius:18px;padding:16px 20px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.next b{font:700 22px/1.2 "Amiri",Georgia,serif;display:block}
+.next span{font-size:14px;opacity:.9}
+.next .cd{font:700 24px/1 system-ui,sans-serif;text-align:right;font-variant-numeric:tabular-nums}
+.prog{display:flex;justify-content:space-between;align-items:center;margin:18px 4px 8px;color:var(--mute);font-size:14px}
+.bar{height:6px;background:var(--line);border-radius:6px;overflow:hidden;margin:0 4px 12px}
+.bar i{display:block;height:100%;background:var(--gold);width:0;transition:width .4s}
+.list{display:flex;flex-direction:column;gap:10px}
+.row{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:var(--card);border:1.5px solid transparent;color:var(--ink);padding:14px 16px;border-radius:16px;cursor:pointer;font:inherit;min-height:64px}
+.row:focus-visible,.date button:focus-visible,.btn:focus-visible,.day:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.row .ck{flex:none;width:30px;height:30px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;color:transparent;transition:all .25s;font-size:17px;font-weight:700}
+.row.done{background:var(--goldsoft);border-color:var(--gold)}
+.row.done .ck{background:var(--gold);border-color:var(--gold);color:var(--on)}
+.row .nm{flex:1}
+.row .nm b{font:700 21px/1.2 "Amiri",Georgia,serif;display:block}
+.row .nm span{font-size:13px;color:var(--mute)}
+.row .tm{font-variant-numeric:tabular-nums;font-size:15px;color:var(--mute);text-align:right}
+.row.now{border-color:var(--accent)}
+.extra{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.extra .row{flex-direction:column;align-items:flex-start;gap:8px;min-height:92px}
+.extra .row .top{display:flex;align-items:center;gap:10px;width:100%}
+.week{background:var(--card);border-radius:18px;padding:16px;margin-top:18px}
+.week h2,.set h2{font:400 18px/1.2 "Amiri",Georgia,serif;margin:0 0 12px;display:flex;justify-content:space-between}
+.days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;text-align:center}
+.day{background:none;border:0;color:var(--ink);font:inherit;cursor:pointer;padding:4px 0;border-radius:12px}
+.day small{display:block;color:var(--mute);font-size:12px}
+.day .c{width:34px;height:34px;border-radius:50%;margin:4px auto 0;display:grid;place-items:center;font-size:13px;border:2px solid var(--line)}
+.day .c.part{border-color:var(--gold)}
+.day .c.full{background:var(--gold);border-color:var(--gold);color:var(--on);font-weight:700}
+.day.sel{background:var(--bg)}
+.set{background:var(--card);border-radius:18px;padding:16px;margin-top:14px}
+.set summary{cursor:pointer;font:400 18px/1.2 "Amiri",Georgia,serif;padding:4px 0}
+.set label{display:block;font-size:13px;color:var(--mute);margin:12px 0 4px}
+.set input{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{margin-top:12px;background:var(--accent);color:var(--on);border:0;border-radius:12px;padding:12px 16px;font:inherit;font-weight:600;cursor:pointer}
+.btn.alt{background:none;color:var(--accent);border:1px solid var(--accent)}
+.msg{font-size:13px;color:var(--mute);margin-top:8px}
+:root[data-theme="rose"]{--bg:#f9e8ec;--card:#fff6f8;--ink:#4a2230;--mute:#8f5d6d;--line:#ecccd5;--accent:#c2456b;--gold:#d4688a;--goldsoft:#fadbe4;--on:#fff}
+:root[data-theme="sage"]{--bg:#e8efe4;--card:#f6f9f3;--ink:#26382a;--mute:#5e7a62;--line:#cddbc8;--accent:#3f7d4e;--gold:#a3883a;--goldsoft:#efe8c9;--on:#fff}
+:root[data-theme="lavender"]{--bg:#ece9f6;--card:#f8f6fd;--ink:#2c2748;--mute:#6c668f;--line:#d6d1ea;--accent:#6a5acd;--gold:#b0893a;--goldsoft:#f0e4c2;--on:#fff}
+.tabs{display:flex;gap:6px;background:var(--card);padding:5px;border-radius:14px;margin:4px 0 14px}
+.tabs button{flex:1;border:0;background:none;color:var(--mute);font:inherit;font-size:14px;padding:9px 4px;border-radius:10px;cursor:pointer}
+.tabs button.on{background:var(--accent);color:var(--on)}
+.tabs button:focus-visible,.chip:focus-visible,.tbtn:focus-visible,.sw button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.sw{display:flex;justify-content:center;gap:12px;margin-top:12px}
+.sw button{width:26px;height:26px;border-radius:50%;border:2px solid var(--bg);box-shadow:0 0 0 1px var(--line);cursor:pointer;padding:0}
+.sw button.on{box-shadow:0 0 0 2px var(--ink)}
+.tas{text-align:center}
+.tphrase{font-size:36px;line-height:1.6;color:var(--gold)}
+.tbtn{width:220px;height:220px;border-radius:50%;border:0;background:var(--accent);color:var(--on);font:400 64px/1 system-ui,sans-serif;font-variant-numeric:tabular-nums;cursor:pointer;margin:18px auto;display:grid;place-items:center;box-shadow:0 0 0 12px var(--goldsoft);user-select:none;touch-action:manipulation;transition:transform .08s}
+.tbtn:active{transform:scale(.96)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:10px 0}
+.chip{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:20px;padding:7px 14px;font:inherit;font-size:14px;cursor:pointer}
+.chip.on{background:var(--goldsoft);border-color:var(--gold)}
+.dua{background:var(--card);border-radius:16px;padding:16px;margin-bottom:10px}
+.dua h3{font:700 18px/1.2 "Amiri",Georgia,serif;margin:0 0 6px}
+.dua .a{font-size:26px;line-height:2;text-align:right}
+.dua .t{color:var(--accent);font-style:italic;font-size:14px}
+.dua .m{margin-top:4px;font-size:15px}
+.ng{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.nm9{background:var(--card);border-radius:14px;padding:12px 8px;text-align:center}
+.nm9 .a{font-size:28px;line-height:1.5;color:var(--gold)}
+.nm9 b{display:block;font-size:14px}
+.nm9 span,.nm9 em{font-size:13px;color:var(--mute);font-style:normal}
+.srch{width:100%;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;margin:10px 0 12px}
+.qib{background:var(--card);border-radius:18px;padding:16px;margin-top:18px;display:flex;align-items:center;gap:16px}
+.qib .btn{margin-top:8px;padding:8px 12px;font-size:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="bis ar" lang="ar" dir="rtl">بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</div>
+    <div class="date">
+      <button id="prev" aria-label="Previous day">‹</button>
+      <h1 id="dt"></h1>
+      <button id="nxt" aria-label="Next day">›</button>
+    </div>
+    <div class="sub ar" id="hj" style="font-size:17px"></div>
+    <div class="sub" id="streak"></div>
+    <div class="sw" role="group" aria-label="Theme"><button data-th="light" style="background:#1f6f6b" aria-label="Mist theme"></button><button data-th="rose" style="background:#d4688a" aria-label="Rose theme"></button><button data-th="sage" style="background:#3f7d4e" aria-label="Sage theme"></button><button data-th="lavender" style="background:#6a5acd" aria-label="Lavender theme"></button><button data-th="dark" style="background:#0d1b1f" aria-label="Night theme"></button></div>
+  </header>
+  <nav class="tabs"><button data-tab="j" class="on">Journal</button><button data-tab="t">Tasbih</button><button data-tab="d">Duas</button><button data-tab="n">99 Names</button></nav>
+  <div id="tj">
+
+  <div class="quote"><p id="qt"></p><small id="qs"></small></div>
+
+  <div id="nextbox"></div>
+
+  <div class="prog"><span id="pc"></span><span id="ps"></span></div>
+  <div class="bar"><i id="pb"></i></div>
+
+  <div class="list" id="list"></div>
+  <div class="extra" id="extra"></div>
+
+  <div class="qib" id="qibla"></div>
+  <div class="week"><h2>This week</h2><div class="days" id="days"></div></div>
+
+  <details class="set" id="set">
+    <summary>Location and mosque</summary>
+    <p class="msg" id="locmsg"></p>
+    <button class="btn" id="geo">Use my location</button>
+    <div class="g2">
+      <div><label for="lat">Latitude</label><input id="lat" inputmode="decimal" placeholder="e.g. 41.88"></div>
+      <div><label for="lng">Longitude</label><input id="lng" inputmode="decimal" placeholder="e.g. -87.63"></div>
+    </div>
+    <label for="mq">My local mosque</label>
+    <input id="mq" placeholder="Mosque name">
+    <label>Iqama times from your mosque (optional)</label>
+    <div class="g2" id="iq"></div>
+    <button class="btn" id="save">Save</button>
+    <p class="msg">Prayer times are calculated from your location. Mosque iqama times can’t be fetched automatically, so enter them here once and they’ll show beside each prayer.</p>
+  </details>
+  </div>
+  <div id="tt" class="tas" hidden>
+    <div class="chips" id="tph"></div>
+    <div class="tphrase ar" id="tar" lang="ar"></div>
+    <div class="sub" id="tme"></div>
+    <button class="tbtn" id="tb" aria-label="Count">0</button>
+    <div class="sub" id="tgt"></div>
+    <div class="chips" id="ttg"></div>
+    <button class="btn alt" id="trs">Reset</button>
+  </div>
+  <div id="td" hidden></div>
+  <div id="tn" hidden>
+    <p class="sub" style="text-align:center;margin:0">Al-Asma ul-Husna, the beautiful names of Allah</p>
+    <input class="srch" id="ns" placeholder="Search the 99 names" aria-label="Search names">
+    <div class="ng" id="ng"></div>
+  </div>
+</div>
+
+<script>
+const PR=[['fajr','Fajr','الفجر'],['dhuhr','Dhuhr','الظهر'],['asr','Asr','العصر'],['maghrib','Maghrib','المغرب'],['isha','Isha','العشاء']];
+const QUOTES=[
+["Verily, in the remembrance of Allah do hearts find rest.","Quran 13:28"],
+["So remember Me; I will remember you.","Quran 2:152"],
+["Indeed, with hardship comes ease.","Quran 94:6"],
+["And whoever relies upon Allah, He is sufficient for him.","Quran 65:3"],
+["The most beloved deeds to Allah are those done consistently, even if small.","Sahih al-Bukhari & Muslim"],
+["Allah does not burden a soul beyond what it can bear.","Quran 2:286"],
+["Prayer is light.","Sahih Muslim"],
+["Call upon Me; I will respond to you.","Quran 40:60"],
+["Make things easy and do not make them difficult.","Sahih al-Bukhari"],
+["My mercy encompasses all things.","Quran 7:156"],
+["Seek help through patience and prayer.","Quran 2:45"],
+["The best of you are those who learn the Quran and teach it.","Sahih al-Bukhari"],
+["Allah is with those who are patient.","Quran 2:153"],
+["Whoever prays the two cool prayers, Fajr and Asr, will enter Paradise.","Sahih al-Bukhari"]
+];
+let mem={days:{},loc:null,mosque:'',iqama:{}};
+function load(){try{const s=localStorage.getItem('salah-journal');if(s)mem=Object.assign(mem,JSON.parse(s))}catch(e){}}
+function save(){try{localStorage.setItem('salah-journal',JSON.stringify(mem))}catch(e){}}
+load();
+mem.tas=mem.tas||{i:0,c:0,t:33};
+if(mem.theme)document.documentElement.setAttribute('data-theme',mem.theme);
+
+const $=id=>document.getElementById(id);
+const key=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const today=()=>{const d=new Date();d.setHours(12,0,0,0);return d};
+let view=today();
+let hd=0,qOn=false;
+const rec=k=>{if(!mem.days[k])mem.days[k]={p:[0,0,0,0,0],q:0,d:0};return mem.days[k]};
+const peek=k=>mem.days[k]||{p:[0,0,0,0,0],q:0,d:0};
+const cnt=k=>peek(k).p.filter(Boolean).length;
+
+/* Prayer time calculation (Muslim World League: Fajr 18°, Isha 17°, standard Asr) */
+const R=Math.PI/180,sin=a=>Math.sin(a*R),cos=a=>Math.cos(a*R),tan=a=>Math.tan(a*R);
+const acos=x=>Math.acos(x)/R,asin=x=>Math.asin(x)/R,atan2=(y,x)=>Math.atan2(y,x)/R;
+const fix=(a,b)=>{a=a-b*Math.floor(a/b);return a<0?a+b:a};
+function julian(y,m,d){if(m<=2){y--;m+=12}const A=Math.floor(y/100),B=2-A+Math.floor(A/4);return Math.floor(365.25*(y+4716))+Math.floor(30.6001*(m+1))+d+B-1524.5}
+function calc(date,lat,lng){
+  const y=date.getFullYear(),m=date.getMonth()+1,d=date.getDate();
+  const jd=julian(y,m,d)-lng/360+0.5,D=jd-2451545;
+  const g=fix(357.529+0.98560028*D,360),q=fix(280.459+0.98564736*D,360);
+  const L=fix(q+1.915*sin(g)+0.02*sin(2*g),360),e=23.439-3.6e-7*D;
+  const RA=fix(atan2(cos(e)*sin(L),cos(L))/15,24),decl=asin(sin(e)*sin(L)),eqt=q/15-RA;
+  const noon=fix(12-eqt,24);
+  const ang=(a,ccw)=>{const x=(-sin(a)-sin(decl)*sin(lat))/(cos(decl)*cos(lat));if(Math.abs(x)>1)return NaN;return noon+(ccw?-1:1)*acos(x)/15};
+  const acot=Math.atan(1/(1+tan(Math.abs(lat-decl))))/R;
+  const T={fajr:ang(18,1),dhuhr:noon+1/60,asr:ang(-acot,0),maghrib:ang(0.833,0),isha:ang(17,0)};
+  const out={};
+  for(const k in T){out[k]=isNaN(T[k])?null:new Date(Date.UTC(y,m-1,d)+(T[k]-lng/15)*36e5)}
+  return out;
+}
+const fmt=dt=>dt?dt.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}):'—';
+function iqDate(date,hhmm){if(!hhmm)return null;const[h,mi]=hhmm.split(':').map(Number);const x=new Date(date);x.setHours(h,mi,0,0);return x}
+const fmtIq=hhmm=>hhmm?fmt(iqDate(new Date(),hhmm)):'';
+
+function timesFor(date){
+  if(!mem.loc)return null;
+  return calc(date,mem.loc.lat,mem.loc.lng);
+}
+
+function render(){
+  hijri();qibla();
+  const k=key(view),isToday=k===key(today()),r=peek(k);
+  $('dt').textContent=view.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'});
+  $('nxt').disabled=isToday;
+  // streak
+  let s=0,c=today();if(cnt(key(c))<5)c.setDate(c.getDate()-1);
+  while(cnt(key(c))===5){s++;c.setDate(c.getDate()-1)}
+  $('streak').textContent=s?s+(s===1?' day':' days')+' with all five prayers':(isToday?'Begin with Fajr, and keep going':'');
+  // quote
+  const qi=Math.floor(view.getTime()/864e5)%QUOTES.length;
+  $('qt').textContent='“'+QUOTES[qi][0]+'”';$('qs').textContent=QUOTES[qi][1];
+  // times
+  const T=timesFor(view),now=new Date();
+  let nextIdx=-1,nextT=null;
+  if(isToday&&T){for(let i=0;i<5;i++){const t=T[PR[i][0]];if(t&&t>now){nextIdx=i;nextT=t;break}}
+    if(nextIdx<0){const tm=new Date(view);tm.setDate(tm.getDate()+1);const T2=timesFor(tm);if(T2&&T2.fajr){nextIdx=0;nextT=T2.fajr}}}
+  // next prayer card
+  if(isToday&&T&&nextT){
+    const iq=mem.iqama[PR[nextIdx][0]];
+    $('nextbox').innerHTML='<div class="next"><div><span>Next prayer</span><b>'+PR[nextIdx][1]+' · '+fmt(nextT)+'</b><span>'+(mem.mosque?esc(mem.mosque)+(iq?' · Iqama '+fmtIq(iq):''):'Add your mosque in settings below')+'</span></div><div class="cd" id="cd"></div></div>';
+    tick(nextT);
+  }else{
+    $('nextbox').innerHTML=T?'':'<div class="next"><div><b>Set your location</b><span>Open “Location and mosque” below to see prayer times</span></div></div>';
+  }
+  // progress
+  const n=r.p.filter(Boolean).length;
+  $('pc').textContent=n+' of 5 prayers';$('ps').textContent=n===5?'Alhamdulillah':'';
+  $('pb').style.width=n*20+'%';
+  // list
+  $('list').innerHTML=PR.map((p,i)=>{
+    const t=T&&T[p[0]],iq=mem.iqama[p[0]];
+    return '<button class="row'+(r.p[i]?' done':'')+(i===nextIdx&&isToday?' now':'')+'" data-p="'+i+'" aria-pressed="'+!!r.p[i]+'"><span class="ck">✓</span><span class="nm"><b>'+p[1]+' <span class="ar" lang="ar">'+p[2]+'</span></b>'+(iq?'<span>Iqama '+fmtIq(iq)+'</span>':'')+'</span><span class="tm">'+(T?fmt(t):'')+'</span></button>';
+  }).join('');
+  $('extra').innerHTML=
+   ['q','d'].map(x=>'<button class="row'+(r[x]?' done':'')+'" data-x="'+x+'" aria-pressed="'+!!r[x]+'"><span class="top"><span class="ck">✓</span><span class="nm"><b>'+(x==='q'?'Quran':'Dhikr')+'</b></span></span><span class="nm"><span>'+(x==='q'?'Read today':'Remembrance made')+'</span></span></button>').join('');
+  // week
+  const days=[];for(let i=6;i>=0;i--){const d=today();d.setDate(d.getDate()-i);days.push(d)}
+  $('days').innerHTML=days.map(d=>{const kk=key(d),n=cnt(kk);
+    return '<button class="day'+(kk===k?' sel':'')+'" data-k="'+kk+'" aria-label="'+d.toDateString()+', '+n+' of 5 prayers"><small>'+d.toLocaleDateString(undefined,{weekday:'narrow'})+'</small><div class="c '+(n===5?'full':n?'part':'')+'">'+n+'</div></button>'}).join('');
+}
+const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+let timer;
+function tick(t){
+  clearInterval(timer);
+  const f=()=>{const el=$('cd');if(!el){clearInterval(timer);return}
+    let s=Math.floor((t-new Date())/1000);
+    if(s<=0){clearInterval(timer);render();return}
+    const h=Math.floor(s/3600),m=Math.floor(s%3600/60);
+    el.textContent=h?h+'h '+m+'m':m+' min'};
+  f();timer=setInterval(f,20000);
+}
+
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-p],[data-x],[data-k]');if(!b)return;
+  const r=rec(key(view));
+  if(b.dataset.p!==undefined){const i=+b.dataset.p;r.p[i]=r.p[i]?0:1;save();render()}
+  else if(b.dataset.x){r[b.dataset.x]=r[b.dataset.x]?0:1;save();render()}
+  else if(b.dataset.k){const[y,m,d]=b.dataset.k.split('-').map(Number);view=new Date(y,m-1,d,12);render()}
+});
+$('prev').onclick=()=>{view=new Date(view);view.setDate(view.getDate()-1);render()};
+$('nxt').onclick=()=>{view=new Date(view);view.setDate(view.getDate()+1);render()};
+
+// settings
+$('iq').innerHTML=PR.map(p=>'<div><label for="iq-'+p[0]+'">'+p[1]+'</label><input type="time" id="iq-'+p[0]+'"></div>').join('');
+function fillSet(){
+  if(mem.loc){$('lat').value=mem.loc.lat;$('lng').value=mem.loc.lng}
+  $('mq').value=mem.mosque||'';
+  PR.forEach(p=>$('iq-'+p[0]).value=mem.iqama[p[0]]||'');
+  $('locmsg').textContent=mem.loc?'Prayer times are set for your saved location.':'Allow location access, or type your latitude and longitude.';
+}
+$('geo').onclick=()=>{
+  $('locmsg').textContent='Finding your location…';
+  if(!navigator.geolocation){$('locmsg').textContent='Location isn’t available here. Enter latitude and longitude instead.';return}
+  navigator.geolocation.getCurrentPosition(p=>{
+    mem.loc={lat:+p.coords.latitude.toFixed(3),lng:+p.coords.longitude.toFixed(3)};save();fillSet();render();
+    $('locmsg').textContent='Location saved. Prayer times updated.';
+  },()=>{$('locmsg').textContent='Location was blocked. Enter latitude and longitude below, then tap Save.'},{timeout:10000});
+};
+$('save').onclick=()=>{
+  const la=parseFloat($('lat').value),lo=parseFloat($('lng').value);
+  if(!isNaN(la)&&!isNaN(lo)&&Math.abs(la)<=66&&Math.abs(lo)<=180)mem.loc={lat:la,lng:lo};
+  mem.mosque=$('mq').value.trim();
+  PR.forEach(p=>{const v=$('iq-'+p[0]).value;if(v)mem.iqama[p[0]]=v;else delete mem.iqama[p[0]]});
+  save();render();$('locmsg').textContent='Saved.';
+};
+fillSet();render();
+
+/* Hijri date */
+function hijri(){let s='';try{s=new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{day:'numeric',month:'long',year:'numeric'}).format(view)}catch(e){}$('hj').textContent=s}
+
+/* Qibla */
+function setHeading(h){hd=h;const g=document.getElementById('qd');if(g)g.setAttribute('transform','rotate('+(-h)+' 60 60)')}
+function qibla(){
+  const el=$('qibla');
+  if(!mem.loc){el.innerHTML='<div><b class="ar" style="font-size:20px">Qibla</b><div class="msg">Set your location in settings below to see the Qibla direction.</div></div>';return}
+  const f1=mem.loc.lat,f2=21.4225,dL=39.8262-mem.loc.lng;
+  const b=fix(atan2(sin(dL)*cos(f2),cos(f1)*sin(f2)-sin(f1)*cos(f2)*cos(dL)),360);
+  const c=['N','NE','E','SE','S','SW','W','NW'][Math.round(b/45)%8];
+  el.innerHTML='<svg width="110" height="110" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="56" fill="none" stroke="var(--line)" stroke-width="2"/><g id="qd"><text x="60" y="17" text-anchor="middle" font-size="11" fill="var(--mute)">N</text><g transform="rotate('+b.toFixed(1)+' 60 60)"><path d="M60 22 L68 62 L60 55 L52 62Z" fill="var(--gold)"/></g></g></svg><div><b class="ar" style="font-size:20px">Qibla</b><div>'+Math.round(b)+'° '+c+' from north</div><button class="btn alt" id="qc">Live compass</button><div class="msg" id="qm">On a phone, the arrow points up when you face the Kaaba.</div></div>';
+  setHeading(hd);
+}
+function onHead(ev){let v=ev.webkitCompassHeading;if(v==null&&ev.alpha!=null&&(ev.absolute||ev.type==='deviceorientationabsolute'))v=360-ev.alpha;if(v!=null){qOn=true;setHeading(v)}}
+document.addEventListener('click',async e=>{
+  if(e.target.id!=='qc')return;
+  const m=$('qm');
+  try{
+    if(typeof DeviceOrientationEvent!=='undefined'&&DeviceOrientationEvent.requestPermission){if(await DeviceOrientationEvent.requestPermission()!=='granted'){m.textContent='Compass permission was denied.';return}}
+    addEventListener('deviceorientationabsolute',onHead);addEventListener('deviceorientation',onHead);
+    m.textContent='Looking for your compass…';
+    setTimeout(()=>{const q=$('qm');if(q)q.textContent=qOn?'Compass is live. Hold your phone flat.':'No compass found on this device. Use the fixed direction above.'},1800);
+  }catch(x){m.textContent='Compass isn’t available here.'}
+});
+
+/* Tabs and themes */
+function show(t){['j','t','d','n'].forEach(x=>{$('t'+x).hidden=x!==t});document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.tab===t))}
+document.querySelector('.tabs').onclick=e=>{const b=e.target.closest('button');if(b)show(b.dataset.tab)};
+function swOn(){document.querySelectorAll('.sw button').forEach(b=>b.classList.toggle('on',b.dataset.th===mem.theme))}
+document.querySelector('.sw').onclick=e=>{const b=e.target.closest('button');if(!b)return;mem.theme=b.dataset.th;document.documentElement.setAttribute('data-theme',mem.theme);save();swOn()};
+swOn();
+
+/* Tasbih */
+const TP=[['سبحان الله','SubhanAllah','Glory be to Allah'],['الحمد لله','Alhamdulillah','All praise is due to Allah'],['الله أكبر','Allahu Akbar','Allah is the Greatest'],['لا إله إلا الله','La ilaha illallah','There is no god but Allah'],['أستغفر الله','Astaghfirullah','I seek forgiveness from Allah']];
+function renderT(){const s=mem.tas;
+  $('tph').innerHTML=TP.map((p,i)=>'<button class="chip'+(i===s.i?' on':'')+'" data-i="'+i+'">'+p[1]+'</button>').join('');
+  $('tar').textContent=TP[s.i][0];$('tme').textContent=TP[s.i][2];$('tb').textContent=s.c;
+  $('tgt').textContent=s.t?(s.c>=s.t?'Complete, alhamdulillah':s.c+' of '+s.t):'Counting freely';
+  $('ttg').innerHTML=[33,99,100,0].map(n=>'<button class="chip'+(n===s.t?' on':'')+'" data-t="'+n+'">'+(n||'Free')+'</button>').join('')}
+$('tt').onclick=e=>{const b=e.target.closest('button');if(!b)return;const s=mem.tas;let done=false;
+  if(b.id==='tb'){s.c++;if(s.t&&s.c===s.t){done=true;rec(key(today())).d=1}try{navigator.vibrate&&navigator.vibrate(done?[80,60,80]:12)}catch(x){}}
+  else if(b.id==='trs')s.c=0;
+  else if(b.dataset.i!==undefined){s.i=+b.dataset.i;s.c=0}
+  else if(b.dataset.t!==undefined)s.t=+b.dataset.t;
+  save();renderT();if(done)render()};
+renderT();
+
+/* Duas */
+const DU=[
+['When you wake up','الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا وَإِلَيْهِ النُّشُورُ','Alhamdu lillahil-ladhi ahyana ba‘da ma amatana wa ilayhin-nushur','All praise is for Allah who gave us life after causing us to die, and to Him is the return.'],
+['Before eating','بِسْمِ اللَّهِ','Bismillah','In the name of Allah.'],
+['After eating','الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنَا وَسَقَانَا وَجَعَلَنَا مُسْلِمِينَ','Alhamdu lillahil-ladhi at‘amana wa saqana wa ja‘alana muslimin','Praise be to Allah who fed us, gave us drink, and made us Muslims.'],
+['Leaving home','بِسْمِ اللَّهِ تَوَكَّلْتُ عَلَى اللَّهِ وَلَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ','Bismillahi tawakkaltu ‘alallah, wa la hawla wa la quwwata illa billah','In the name of Allah; I trust in Allah, and there is no power or strength except with Allah.'],
+['Before sleep','بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا','Bismika Allahumma amutu wa ahya','In Your name, O Allah, I die and I live.'],
+['For both worlds (Quran 2:201)','رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ','Rabbana atina fid-dunya hasanatan wa fil-akhirati hasanatan wa qina ‘adhaban-nar','Our Lord, give us good in this world and good in the next, and protect us from the punishment of the Fire.'],
+['For knowledge (Quran 20:114)','رَبِّ زِدْنِي عِلْمًا','Rabbi zidni ‘ilma','My Lord, increase me in knowledge.'],
+['For ease (Quran 20:25-26)','رَبِّ اشْرَحْ لِي صَدْرِي وَيَسِّرْ لِي أَمْرِي','Rabbi-shrah li sadri wa yassir li amri','My Lord, open my heart for me and make my task easy.'],
+['For forgiveness (Quran 7:23)','رَبَّنَا ظَلَمْنَا أَنفُسَنَا وَإِن لَّمْ تَغْفِرْ لَنَا وَتَرْحَمْنَا لَنَكُونَنَّ مِنَ الْخَاسِرِينَ','Rabbana zalamna anfusana wa in lam taghfir lana wa tarhamna lanakunanna minal-khasirin','Our Lord, we have wronged ourselves; if You do not forgive us and have mercy on us, we will surely be among the losers.'],
+['In worry (Quran 9:129)','حَسْبِيَ اللَّهُ لَا إِلَهَ إِلَّا هُوَ عَلَيْهِ تَوَكَّلْتُ','Hasbiyallahu la ilaha illa huwa ‘alayhi tawakkaltu','Allah is enough for me; there is no god but Him. In Him I place my trust.'],
+['For parents (Quran 17:24)','رَبِّ ارْحَمْهُمَا كَمَا رَبَّيَانِي صَغِيرًا','Rabbir-hamhuma kama rabbayani saghira','My Lord, have mercy on them as they raised me when I was small.']];
+$('td').innerHTML=DU.map(d=>'<div class="dua"><h3>'+d[0]+'</h3><div class="a ar" lang="ar" dir="rtl">'+d[1]+'</div><div class="t">'+d[2]+'</div><div class="m">'+d[3]+'</div></div>').join('');
+
+/* 99 Names */
+const NM=`الرحمن|Ar-Rahman|The Most Gracious
+الرحيم|Ar-Rahim|The Most Merciful
+الملك|Al-Malik|The King
+القدوس|Al-Quddus|The Most Holy
+السلام|As-Salam|The Source of Peace
+المؤمن|Al-Mu’min|The Giver of Security
+المهيمن|Al-Muhaymin|The Guardian
+العزيز|Al-Aziz|The Almighty
+الجبار|Al-Jabbar|The Compeller
+المتكبر|Al-Mutakabbir|The Supreme in Greatness
+الخالق|Al-Khaliq|The Creator
+البارئ|Al-Bari’|The Originator
+المصور|Al-Musawwir|The Fashioner
+الغفار|Al-Ghaffar|The Constant Forgiver
+القهار|Al-Qahhar|The All-Subduer
+الوهاب|Al-Wahhab|The Bestower
+الرزاق|Ar-Razzaq|The Provider
+الفتاح|Al-Fattah|The Opener
+العليم|Al-Alim|The All-Knowing
+القابض|Al-Qabid|The Withholder
+الباسط|Al-Basit|The Expander
+الخافض|Al-Khafid|The Abaser
+الرافع|Ar-Rafi|The Exalter
+المعز|Al-Mu’izz|The Giver of Honor
+المذل|Al-Mudhill|The Humbler
+السميع|As-Sami|The All-Hearing
+البصير|Al-Basir|The All-Seeing
+الحكم|Al-Hakam|The Judge
+العدل|Al-Adl|The Utterly Just
+اللطيف|Al-Latif|The Subtle, the Kind
+الخبير|Al-Khabir|The All-Aware
+الحليم|Al-Halim|The Forbearing
+العظيم|Al-Azim|The Magnificent
+الغفور|Al-Ghafur|The Forgiving
+الشكور|Ash-Shakur|The Appreciative
+العلي|Al-Ali|The Most High
+الكبير|Al-Kabir|The Most Great
+الحفيظ|Al-Hafiz|The Preserver
+المقيت|Al-Muqit|The Sustainer
+الحسيب|Al-Hasib|The Reckoner
+الجليل|Al-Jalil|The Majestic
+الكريم|Al-Karim|The Generous
+الرقيب|Ar-Raqib|The Watchful
+المجيب|Al-Mujib|The Responsive
+الواسع|Al-Wasi|The All-Encompassing
+الحكيم|Al-Hakim|The All-Wise
+الودود|Al-Wadud|The Loving
+المجيد|Al-Majeed|The Glorious
+الباعث|Al-Ba’ith|The Resurrector
+الشهيد|Ash-Shahid|The Witness
+الحق|Al-Haqq|The Truth
+الوكيل|Al-Wakil|The Trustee
+القوي|Al-Qawi|The Strong
+المتين|Al-Matin|The Firm
+الولي|Al-Waliyy|The Protecting Friend
+الحميد|Al-Hamid|The Praiseworthy
+المحصي|Al-Muhsi|The Counter of All
+المبدئ|Al-Mubdi|The Originator
+المعيد|Al-Mu’id|The Restorer
+المحيي|Al-Muhyi|The Giver of Life
+المميت|Al-Mumit|The Bringer of Death
+الحي|Al-Hayy|The Ever-Living
+القيوم|Al-Qayyum|The Self-Sustaining
+الواجد|Al-Wajid|The Finder
+الماجد|Al-Majid|The Noble
+الواحد|Al-Wahid|The One
+الأحد|Al-Ahad|The Unique
+الصمد|As-Samad|The Eternal Refuge
+القادر|Al-Qadir|The Capable
+المقتدر|Al-Muqtadir|The All-Powerful
+المقدم|Al-Muqaddim|The Expediter
+المؤخر|Al-Mu’akhkhir|The Delayer
+الأول|Al-Awwal|The First
+الآخر|Al-Akhir|The Last
+الظاهر|Az-Zahir|The Manifest
+الباطن|Al-Batin|The Hidden
+الوالي|Al-Wali|The Governor
+المتعالي|Al-Muta’ali|The Supremely Exalted
+البر|Al-Barr|The Source of Goodness
+التواب|At-Tawwab|The Accepter of Repentance
+المنتقم|Al-Muntaqim|The Avenger
+العفو|Al-Afuww|The Pardoner
+الرؤوف|Ar-Ra’uf|The Compassionate
+مالك الملك|Malik-ul-Mulk|Owner of All Sovereignty
+ذو الجلال والإكرام|Dhul-Jalali wal-Ikram|Lord of Majesty and Generosity
+المقسط|Al-Muqsit|The Equitable
+الجامع|Al-Jami|The Gatherer
+الغني|Al-Ghani|The Self-Sufficient
+المغني|Al-Mughni|The Enricher
+المانع|Al-Mani|The Preventer
+الضار|Ad-Darr|The Distresser
+النافع|An-Nafi|The Benefactor
+النور|An-Nur|The Light
+الهادي|Al-Hadi|The Guide
+البديع|Al-Badi|The Incomparable Originator
+الباقي|Al-Baqi|The Everlasting
+الوارث|Al-Warith|The Inheritor
+الرشيد|Ar-Rashid|The Guide to the Right Path
+الصبور|As-Sabur|The Patient`.split('\n').map(l=>l.split('|'));
+function renderN(q){q=(q||'').trim().toLowerCase();
+  $('ng').innerHTML=NM.map((n,i)=>[n,i]).filter(([n])=>!q||(n[1]+' '+n[2]).toLowerCase().includes(q)||n[0].includes(q)).map(([n,i])=>'<div class="nm9"><em>'+(i+1)+'</em><div class="a ar" lang="ar">'+n[0]+'</div><b>'+n[1]+'</b><span>'+n[2]+'</span></div>').join('')||'<p class="msg">No names match your search.</p>'}
+$('ns').oninput=e=>renderN(e.target.value);
+renderN('');
+if(!mem.loc&&navigator.geolocation&&navigator.permissions){
+  try{navigator.permissions.query({name:'geolocation'}).then(s=>{if(s.state==='granted')$('geo').click()})}catch(e){}
+}
+</script>
+</body>
+</html>
